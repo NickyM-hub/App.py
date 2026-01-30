@@ -2,12 +2,6 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QMessageBox
 
 
-
-
-
-
-
-
 #Verifiação de prenchimento dos campos  
 def validaCampos():
     usuario = caixaTextoUsuario.text()
@@ -30,12 +24,9 @@ def login(usuario, senha):
 
 #Limpar Campos
 def limpaCampos():
-
     caixaTextoUsuario.clear()
     caixaTextoSenha.clear()
     caixaTextoUsuario.setFocus() 
-
-
 
 #Criando aplicação
 app = QApplication(sys.argv) 
