@@ -1,6 +1,13 @@
 import sys 
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QMessageBox
 
+
+
+
+
+
+
+
 #Verifiação de prenchimento dos campos  
 def validaCampos():
     usuario = caixaTextoUsuario.text()
@@ -16,7 +23,10 @@ def validaCampos():
 def login(usuario, senha):
 
     if usuario == "admin" and senha == "pass123$":
-        QMessageBox.information(telaLogin, "Falha no login", "Usuário ou senha inválidos.")
+        QMessageBox.information(telaLogin, "Sucesso", f"Bem-vindo, {usuario}!")
+    else:
+        limpaCampos()
+        QMessageBox.warning(telaLogin, "Falha no login", "Usuário ou senha inválidos.")
 
 #Limpar Campos
 def limpaCampos():
