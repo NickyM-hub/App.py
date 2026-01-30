@@ -11,6 +11,10 @@ def validaCampos():
     if usuario == '' or senha == '':
         QMessageBox.critical(telaLogin, "Atenção", "Para validação os dois campos devem ser informados")
         limpaCampos()
+
+    if usuario == senha:
+        QMessageBox.critical(telaLogin, "Aviso!", "o usuario e a senha não podem ser iguais")
+
     else:
         login(usuario, senha)
 
