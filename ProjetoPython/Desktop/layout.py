@@ -7,6 +7,16 @@ def login(nome, rg, cpf, dataNascimento, nomeMae, senha):
     QMessageBox.information(telaLogin, "Sucesso", f"Bem-vindo, {nome}!\nRG: {rg}\nCPF: {cpf}\nData de Nascimento: {dataNascimento}\nNome da Mãe: {nomeMae}")
 
 
+#Função para começar o campo mascarado do começo do campo
+def move_cursor():
+    line_edit = QLineEdit()
+    line_edit.setCursorPosition(0)
+    line_edit.focusInEvent = lambda event: (
+    QLineEdit.focusInEvent(line_edit, event),
+    line_edit.setCursorPosition(0)
+)
+
+
 #Verifiação de prenchimento dos campos  
 def validaCampos():
     nome = caixaTextoNome.text()
@@ -94,8 +104,7 @@ caixaTextoRg.move(80, 150)
 #Data de Nascimento
 caixaTextoDataNascimento = QLineEdit(telaLogin)
 caixaTextoDataNascimento.setInputMask("00/00/0000")
-caixaTextoDataNascimento.setCursorMoveStyle(Qt.LogicalMoveStyle)
-caixaTextoDataNascimento.setCursorPosition(0)
+caixaTextoDataNascimento.setCursorMoveStyle(0)
 caixaTextoDataNascimento.move(80, 200)
 
 #Nome da Mãe
