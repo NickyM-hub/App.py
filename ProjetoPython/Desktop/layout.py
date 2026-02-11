@@ -7,7 +7,6 @@ def login(nome, rg, cpf, dataNascimento, nomeMae, senha):
     QMessageBox.information(telaLogin, "Sucesso", f"Bem-vindo, {nome}!\nRG: {rg}\nCPF: {cpf}\nData de Nascimento: {dataNascimento}\nNome da Mãe: {nomeMae}")
 
 
-
 #Verifiação de prenchimento dos campos  
 def validaCampos():
     nome = caixaTextoNome.text()
@@ -37,7 +36,6 @@ def limpaCampos():
     caixaTextoRg.clear()
     caixaTextoNomeMae.clear()
     caixaTextoSenha.clear()
-
 
 
 #Criando aplicação
@@ -74,31 +72,36 @@ textoRotuloSenha = QLabel('Senha: ', telaLogin)
 textoRotuloSenha.move(80, 280)
 
 
-
-
-
-
 #Criando caixa de texto
 #Nome
 caixaTextoNome = QLineEdit(telaLogin)
 caixaTextoNome.move(80, 50)
+
 #CPF
 caixaTextoCpf = QLineEdit(telaLogin)
-caixaTextoCpf.setValidator(caixaTextoCpf.setInputMask("000.000.000-00"))
+caixaTextoCpf.setInputMask("000.000.000-00")
 caixaTextoCpf.setCursorMoveStyle(Qt.LogicalMoveStyle)
 caixaTextoCpf.setCursorPosition(0)
 caixaTextoCpf.move(80, 100)
+
 #RG
 caixaTextoRg = QLineEdit(telaLogin)
-caixaTextoRg.setValidator(caixaTextoRg.setInputMask("00.000.000-0"))
+caixaTextoRg.setInputMask("00.000.000-0")
+caixaTextoRg.setCursorMoveStyle(Qt.LogicalMoveStyle)
+caixaTextoRg.setCursorPosition(0)
 caixaTextoRg.move(80, 150)
+
 #Data de Nascimento
 caixaTextoDataNascimento = QLineEdit(telaLogin)
-caixaTextoDataNascimento.setValidator(caixaTextoDataNascimento.setInputMask("00/00/0000"))
+caixaTextoDataNascimento.setInputMask("00/00/0000")
+caixaTextoDataNascimento.setCursorMoveStyle(Qt.LogicalMoveStyle)
+caixaTextoDataNascimento.setCursorPosition(0)
 caixaTextoDataNascimento.move(80, 200)
+
 #Nome da Mãe
 caixaTextoNomeMae = QLineEdit(telaLogin)
 caixaTextoNomeMae.move(80, 250)
+
 #Senha
 caixaTextoSenha = QLineEdit(telaLogin)
 caixaTextoSenha.setEchoMode(QLineEdit.Password)
