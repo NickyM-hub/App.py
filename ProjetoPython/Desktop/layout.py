@@ -1,5 +1,11 @@
 import sys 
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QMessageBox
+from PyQt5.QtCore import Qt
+
+#mini campo para guardar os dados do usuário
+def login(nome, rg, cpf, dataNascimento, nomeMae, senha):
+    QMessageBox.information(telaLogin, "Sucesso", f"Bem-vindo, {nome}!\nRG: {rg}\nCPF: {cpf}\nData de Nascimento: {dataNascimento}\nNome da Mãe: {nomeMae}")
+
 
 
 #Verifiação de prenchimento dos campos  
@@ -13,13 +19,12 @@ def validaCampos():
     
 
     #Verificação de usuário e senha 
-    if nome == '' or senha == '' or cpf == '' or dataNascimento == '' or rg == '' or nomeMae == '':
+    if nome == '' or senha == '' or cpf == '..-' or dataNascimento == '//' or rg == '..-' or nomeMae == '':
         QMessageBox.critical(telaLogin, "Atenção", "Para validação todos os campos devem ser informados")
-        limpaCampos()
 
-    if nome == senha or nomeMae == senha:
-        QMessageBox.critical(telaLogin, "Aviso!", "a senha não pode ser igual ao nome ou nome da mãe")
-        limpaCampos()
+    elif nome == senha or nomeMae == senha:
+        QMessageBox.critical(telaLogin, "Aviso!", "a senha não pode ser igual ao nome")
+        caixaTextoSenha.clear()
 
     else:
         login(nome, rg, cpf, dataNascimento, nomeMae, senha)
@@ -79,12 +84,17 @@ caixaTextoNome = QLineEdit(telaLogin)
 caixaTextoNome.move(80, 50)
 #CPF
 caixaTextoCpf = QLineEdit(telaLogin)
+caixaTextoCpf.setValidator(caixaTextoCpf.setInputMask("000.000.000-00"))
+caixaTextoCpf.setCursorMoveStyle(Qt.LogicalMoveStyle)
+caixaTextoCpf.setCursorPosition(0)
 caixaTextoCpf.move(80, 100)
 #RG
 caixaTextoRg = QLineEdit(telaLogin)
+caixaTextoRg.setValidator(caixaTextoRg.setInputMask("00.000.000-0"))
 caixaTextoRg.move(80, 150)
 #Data de Nascimento
 caixaTextoDataNascimento = QLineEdit(telaLogin)
+caixaTextoDataNascimento.setValidator(caixaTextoDataNascimento.setInputMask("00/00/0000"))
 caixaTextoDataNascimento.move(80, 200)
 #Nome da Mãe
 caixaTextoNomeMae = QLineEdit(telaLogin)
