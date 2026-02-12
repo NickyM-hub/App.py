@@ -13,7 +13,11 @@ def move_cursor():
     line_edit.setCursorPosition(0)
     line_edit.focusInEvent = lambda event: (
     QLineEdit.focusInEvent(line_edit, event),
-    line_edit.setCursorPosition(0)
+    line_edit.setCursorPosition(0),
+    caixaTextoCpf.setCursorPosition(0),
+    caixaTextoRg.setCursorPosition(0),
+    caixaTextoDataNascimento.setCursorPosition(0)
+    
 )
 
 
@@ -90,8 +94,7 @@ caixaTextoNome.move(80, 50)
 #CPF
 caixaTextoCpf = QLineEdit(telaLogin)
 caixaTextoCpf.setInputMask("000.000.000-00")
-caixaTextoCpf.setCursorMoveStyle(Qt.LogicalMoveStyle)
-caixaTextoCpf.setCursorPosition(0)
+caixaTextoCpf
 caixaTextoCpf.move(80, 100)
 
 #RG
