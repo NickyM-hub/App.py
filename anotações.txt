@@ -1,0 +1,8 @@
+a pessoa deve ter ,no mínimo, 10 anos e no máximo 100 anos
+datas futuras ou inexistentes não são autorizadas
+permitir numero e letra no cep e rg
+n pode ter vírgula ou ponto e vírgula ou ponto nos campos
+o cep ser mostrado assim que tiver 8 números, independente se os outros campos foram preenchidos ou não
+mostrar a idade da pessoa com base na data dela e a data atual
+o rg, cpf, data de nascimento, senha e cep só podem funcionar com um limite mínimo de caracteres
+mostrar o horário que aconteceu o cadastro
