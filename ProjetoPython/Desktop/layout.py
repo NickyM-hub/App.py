@@ -2,7 +2,7 @@ import requests
 import sys 
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QMessageBox, QDateEdit
 from PyQt5.QtCore import QDate
-from PyQt5.QtCore import Qt
+
 
 #mini campo para guardar os dados do usuário
 def login(nome, rg, cpf, dataNascimento, nomeMae, senha, cep, rua, bairro, cidade, uf):
