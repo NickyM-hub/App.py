@@ -65,15 +65,15 @@ def validaCampos():
         caixaTextoSenha.clear()
 
     #Verificação de CEP
-    if cep < 8:
+    if len(cep.replace("-", "")) < 8:   
         QMessageBox.critical(telaLogin, "Atenção", "O CEP deve conter 8 números")
 
     #Verificação de CPF, RG e Data de Nascimento
     if dataNascimento > dataAtual and  (dataAtual - dataNascimento) <= 10 or (dataAtual - dataNascimento) >= 100:
         QMessageBox.critical(telaLogin, "Atenção", "A data de nascimento não pode ser futura e a pessoa deve ter no mínimo 10 anos")  
-    if rg != 9:
+    if len(rg.replace(".", "").replace("-", "")) != 9:
         QMessageBox.critical(telaLogin, "Atenção", "O RG deve conter 9 caracteres")
-    if cpf != 11:
+    if len(cpf.replace(".", "").replace("-", "")) != 11:
         QMessageBox.critical(telaLogin, "Atenção", "O CPF deve conter 11 números")
     
     else:
