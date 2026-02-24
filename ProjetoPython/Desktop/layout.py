@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt
 
 # a pessoa deve ter ,no mínimo, 10 anos e no máximo 100 anos
 # datas futuras ou inexistentes não são autorizadas
-# permitir numero e letra no cep
+# permitir numero e letra no cep e no rg, mas não permitir caracteres especiais como vírgula, ponto ou ponto e vírgula
 # n pode ter vírgula ou ponto e vírgula ou ponto nos campos
 # o cep deve ser mostrado assim que tiver 8 números, independente se os outros campos foram preenchidos ou não
 # o rg, cpf, data de nascimento, senha e cep só podem funcionar com um limite mínimo de caracteres
@@ -14,9 +14,23 @@ from PyQt5.QtCore import Qt
 # mostrar a idade da pessoa com base na data dela e a data atual
 
 #mini campo para guardar os dados do usuário
-def login(nome, rg, cpf, dataNascimento, nomeMae, senha):
-    QMessageBox.information(telaLogin, "Sucesso", f"Bem-vindo, {nome}!\nRG: {rg}\nCPF: {cpf}\nData de Nascimento: {dataNascimento}\nNome da Mãe: {nomeMae}")
+def login(nome, rg, cpf, dataNascimento, nomeMae, senha, cep, rua, bairro, cidade, uf):
+    QMessageBox.information(telaLogin, "Cadastro concluído com sucesso!", f"Bem-vindo, {nome}!\nRG: {rg}\nCPF: {cpf}\nData de Nascimento: {dataNascimento}\n Nome da Mãe: {nomeMae}")
 
+def conferirDataAtual():
+    url = "https://todaysdatenow.com/pt-BR/tools/json-date/"
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            dataAtual = data.get("date")
+            return dataAtual
+        else:
+            QMessageBox.critical(telaLogin, "Erro", "Falha na consulta da data atual.\nVerifique sua conexão com a internet.")
+            return None
+    except Exception as e:
+        QMessageBox.critical(telaLogin, "Erro", f"Ocorreu um erro: {str(e)}")
+        return None
 
 def tratarCEP(codigoCEP):
     url = f"https://viacep.com.br/ws/{codigoCEP}/json/"
@@ -53,28 +67,70 @@ def validaCampos():
     bairro = caixaTextoBairro.text()
     cidade = caixaTextoCidade.text()
     uf = caixaTextoUF.text()
-    senha = caixaTextoSenha.text()
     dataAtual = QDate.currentDate()
     dataNascimento = QDate.fromString(dataNascimento, "dd/MM/yyyy")
 
     #Verificação de usuário e senha 
-    if nome == '' or senha == '' or cpf == '..-' or dataNascimento == '//' or rg == '..-' or nomeMae == '':
+    if nome == '' or senha == '' or cpf == '..-' or dataNascimento == '//' or rg == '..-' or nomeMae == '' or cep == '.....-...' or rua == '' or bairro == '' or cidade == '' or uf == '':
         QMessageBox.critical(telaLogin, "Atenção", "Para validação todos os campos devem ser informados")
     if nome == senha or nomeMae == senha:
         QMessageBox.critical(telaLogin, "Aviso!", "a senha não pode ser igual ao nome")
         caixaTextoSenha.clear()
 
-    #Verificação de CEP
-    if cep < 8:
-        QMessageBox.critical(telaLogin, "Atenção", "O CEP deve conter 8 números")
+    #Verificação de caracteres especiais nos nomes, rg e cep
+    if any(i in nome for i in [';', ',', '.',  '-', '+']):
+        QMessageBox.critical(telaLogin, "Atenção", "O nome não pode conter caracteres especiais como vírgula, ponto ou ponto e vírgula.")
+        return
+    if any(i in nomeMae for i in [';', ',', '.',  '-', '+']):
+        QMessageBox.critical(telaLogin, "Atenção", "O nome da mãe não pode conter caracteres especiais como vírgula, ponto ou ponto e vírgula.")
+        return
 
-    #Verificação de CPF, RG e Data de Nascimento
-    if dataNascimento > dataAtual and  (dataAtual - dataNascimento) <= 10 or (dataAtual - dataNascimento) >= 100:
-        QMessageBox.critical(telaLogin, "Atenção", "A data de nascimento não pode ser futura e a pessoa deve ter no mínimo 10 anos")  
-    if rg != 9:
+    #Verificação de CEP
+    if len(cep) < 9:
+        QMessageBox.critical(telaLogin, "Atenção", "O CEP deve conter 8 números")
+        return
+    if any(i in cep for i in [';', ',', '.', '-', '+']):
+        QMessageBox.critical(telaLogin, "Atenção", "O CEP não pode conter caracteres especiais como vírgula, ponto ou ponto e vírgula.")
+        return
+
+    #Verificação de senha
+    if len(senha) < 8:
+        QMessageBox.critical(telaLogin, "Atenção", "A senha deve conter no mínimo 8 caracteres")
+        return
+
+    #Verificação de datas
+
+    #data futura
+    if QDate(dataNascimento, "dd/MM/yyyy") > dataAtual: 
+        QMessageBox.critical(telaLogin, "Atenção", "A data não pode ser futura.")
+        return
+    #data inexistente
+    if not QDate(dataNascimento, "dd/MM/yyyy").isValid():
+        QMessageBox.critical(telaLogin, "Atenção", "Data de nascimento inválida.")
+        return
+    #verificação de idade
+    if QDate(dataAtual).year() - QDateEdit(dataNascimento, "dd/MM/yyyy").year() < 10:
+        QMessageBox.critical(telaLogin, "Atenção", "A pessoa deve ter no mínimo 10 anos.")
+        return
+    if QDate(dataAtual).year() - QDateEdit(dataNascimento, "dd/MM/yyyy").year() > 100:
+        QMessageBox.critical(telaLogin, "Atenção", "A pessoa deve ter no máximo 100 anos.")
+        return
+    
+    #verificação de RG
+    if len(rg) != 9:
         QMessageBox.critical(telaLogin, "Atenção", "O RG deve conter 9 caracteres")
-    if cpf != 11:
+        return
+    if any(i in rg for i in [';', ',', '.']):
+        QMessageBox.critical(telaLogin, "Atenção", "O RG não pode conter caracteres especiais como vírgula, ponto ou ponto e vírgula.")
+        return
+    
+    #verificação de CPF
+    if len(cpf) != 14:
         QMessageBox.critical(telaLogin, "Atenção", "O CPF deve conter 11 números")
+        return
+    if any(i in cpf for i in [';', ',', '.']):
+        QMessageBox.critical(telaLogin, "Atenção", "O CPF não pode conter caracteres especiais como vírgula, ponto ou ponto e vírgula.")
+        return
     
     else:
         login(nome, rg, cpf, dataNascimento, nomeMae, senha, cep, rua, bairro, cidade, uf)
@@ -163,8 +219,6 @@ caixaTextoCpf.move(80, 100)
 
 #RG
 caixaTextoRg = QLineEdit(telaLogin)
-caixaTextoRg.setInputMask("00.000.000-0")
-caixaTextoRg.setCursorMoveStyle(Qt.LogicalMoveStyle)
 caixaTextoRg.setCursorPosition(0)
 caixaTextoRg.move(80, 150)
 
@@ -186,7 +240,6 @@ caixaTextoSenha.move(80, 300)
 #CEP
 caixaTextoCEP = QLineEdit(telaLogin)
 caixaTextoCEP.setFixedWidth(80)
-caixaTextoCEP.setInputMask("00000-000")
 caixaTextoCEP.move(80, 350)
 
 #Rua
