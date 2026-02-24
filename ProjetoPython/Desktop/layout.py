@@ -110,8 +110,8 @@ def validaCampos():
     if len(rg) != 12:
         QMessageBox.critical(telaLogin, "Atenção", "O RG deve conter 9 caracteres")
         return
-    if any(i in rg for i in [';', ',', '.',  '-', '+', 'ç']):
-        QMessageBox.critical(telaLogin, "Atenção", "O nome da mãe não pode conter caracteres especiais como vírgula, ponto, 'ç', ponto e vírgula etc.")
+    if any(i in rg for i in [';', ',', '+', 'ç']):
+        QMessageBox.critical(telaLogin, "Atenção", "O rg não pode conter caracteres especiais com ponto e vírgula etc.")
         return
     
     #verificação de CPF
