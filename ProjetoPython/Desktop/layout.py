@@ -3,11 +3,10 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QMessageBox, QDateEdit
 from PyQt5.QtCore import QDate
 
-
 #mini campo para guardar os dados do usuário
-def login(nome, rg, cpf, dataNascimento, nomeMae, senha, cep, rua, bairro, cidade, uf):
+def login(nome, rg, cpf, dataNascimento, idade, nomeMae, senha, cep, rua, bairro, cidade, uf):
     dataFormatada = dataNascimento.toString("dd/MM/yyyy")
-    QMessageBox.information(telaLogin, "Cadastro concluído com sucesso!", f"Bem-vindo, {nome}!\nRG: {rg}\nCPF: {cpf}\nData de Nascimento: {dataFormatada}\n Nome da Mãe: {nomeMae}")
+    QMessageBox.information(telaLogin, "Cadastro concluído com sucesso!", f"Bem-vindo, {nome}!\nRG: {rg}\nCPF: {cpf}\nData de Nascimento: {dataFormatada}\n Idade: {idade}\nNome da Mãe: {nomeMae}")
 
 def conferirDataAtual():
     url = "https://todaysdatenow.com/pt-BR/tools/json-date/"
@@ -45,14 +44,13 @@ def tratarCEP(codigoCEP):
     except Exception as e:
         QMessageBox.critical(telaLogin, "Erro", f"Ocorreu um erro: {str(e)}")
 
-
-
 #Verifiação de prenchimento dos campos  
 def validaCampos():
     nome = caixaTextoNome.text()
     cpf = caixaTextoCpf.text()
     dataNascimento = caixaTextoDataNascimento.text()
     rg = caixaTextoRg.text()
+    idade = caixaTextoIdade.text()
     nomeMae = caixaTextoNomeMae.text() 
     senha = caixaTextoSenha.text()
     cep = caixaTextoCEP.text()
@@ -122,6 +120,10 @@ def validaCampos():
     else:
         login(nome, rg, cpf, dataNascimento, nomeMae, senha, cep, rua, bairro, cidade, uf)
 
+#fazendo 
+def classificandoIdade():
+
+
 
 
 #Limpar Campos
@@ -138,6 +140,7 @@ def limpaCampos():
     caixaTextoCidade.clear()
     caixaTextoUF.clear()
     caixaTextoCEP.setFocus()
+    caixaTextoIdade.setFocus()
 
 
 
