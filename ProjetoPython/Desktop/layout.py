@@ -4,15 +4,6 @@ from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButto
 from PyQt5.QtCore import QDate
 from PyQt5.QtCore import Qt
 
-# a pessoa deve ter ,no mínimo, 10 anos e no máximo 100 anos
-# datas futuras ou inexistentes não são autorizadas
-# permitir numero e letra no cep e no rg, mas não permitir caracteres especiais como vírgula, ponto ou ponto e vírgula
-# n pode ter vírgula ou ponto e vírgula ou ponto nos campos
-# o cep deve ser mostrado assim que tiver 8 números, independente se os outros campos foram preenchidos ou não
-# o rg, cpf, data de nascimento, senha e cep só podem funcionar com um limite mínimo de caracteres
-# mostrar o horário que aconteceu o cadastro
-# mostrar a idade da pessoa com base na data dela e a data atual
-
 #mini campo para guardar os dados do usuário
 def login(nome, rg, cpf, dataNascimento, nomeMae, senha, cep, rua, bairro, cidade, uf):
     dataFormatada = dataNascimento.toString("dd/MM/yyyy")
@@ -33,6 +24,7 @@ def conferirDataAtual():
         QMessageBox.critical(telaLogin, "Erro", f"Ocorreu um erro: {str(e)}")
         return None
 
+#Consultando CEP
 def tratarCEP(codigoCEP):
     url = f"https://viacep.com.br/ws/{codigoCEP}/json/"
     try:    
@@ -107,11 +99,11 @@ def validaCampos():
         QMessageBox.critical(telaLogin, "Atenção", "Data de nascimento inválida.")
         return
     #verificação de idade
-    if QDate(dataAtual).year() - QDate(dataNascimento).year() < 10:
-        QMessageBox.critical(telaLogin, "Atenção", "A pessoa deve ter no mínimo 10 anos.")
+    if QDate(dataAtual).year() - QDate(dataNascimento).year() < 5:
+        QMessageBox.critical(telaLogin, "Atenção", "O usuário deve ter mais de 5 anos.")
         return
     if QDate(dataAtual).year() - QDate(dataNascimento).year() > 100:
-        QMessageBox.critical(telaLogin, "Atenção", "A pessoa deve ter no máximo 100 anos.")
+        QMessageBox.critical(telaLogin, "Atenção", "O usuário deve ter menos que 100 anos.")
         return
     
     #verificação de RG
