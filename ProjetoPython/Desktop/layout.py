@@ -71,10 +71,10 @@ def validaCampos():
         caixaTextoSenha.clear()
 
     #Verificação de caracteres especiais nos nomes
-    if any(i in nome for i in [';', ',', '.',  '-', '+']):
-        QMessageBox.critical(telaLogin, "Atenção", "O nome não pode conter caracteres especiais como vírgula, ponto ou ponto e vírgula.")
+    if any(i in nome for i in [';', ',', '.',  '-', '+', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']):
+        QMessageBox.critical(telaLogin, "Atenção", "O nome não pode conter caracteres especiais como vírgula, ponto ou ponto, vírgula e números.")
         return
-    if any(i in nomeMae for i in [';', ',', '.',  '-', '+']):
+    if any(i in nomeMae for i in [';', ',', '.',  '-', '+', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']):
         QMessageBox.critical(telaLogin, "Atenção", "O nome da mãe não pode conter caracteres especiais como vírgula, ponto ou ponto e vírgula.")
         return
 
