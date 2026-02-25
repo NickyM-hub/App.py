@@ -1,11 +1,72 @@
 import requests
+import folium
 import sys 
+import tempfile
+import os
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QMessageBox, QDateEdit
-from PyQt5.QtCore import QDate
+from PyQt5.QtCore import QDate, QUrl
+
+ultimo_cep = ""
+ultima_rua = ""
+ultimo_bairro = ""
+ultima_cidade = ""
+ultimo_uf = ""
+
 #mini campo para guardar os dados do usuário
 def login(nome, rg, cpf, dataNascimento, idade, nomeMae, senha, cep, rua, bairro, cidade, uf):
     dataFormatada = dataNascimento.toString("dd/MM/yyyy")
     QMessageBox.information(telaLogin, "Cadastro concluído com sucesso!", f"Bem-vindo, {nome}!\nRG: {rg}\nCPF: {cpf}\nData de Nascimento: {dataFormatada}\n Idade: {idade}\nNome da Mãe: {nomeMae}")
+
+def mostrar_mapa(cep, rua, bairro, cidade, uf):
+    """Atualiza o mapa com a localização do CEP"""
+    try:
+        # Converte endereço em coordenadas
+        endereco = f"{rua}, {bairro}, {cidade}, {uf}, Brasil"
+        url_geo = "https://nominatim.openstreetmap.org/search"
+        params = {
+            'q': endereco,
+            'format': 'json',
+            'limit': 1
+        }
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        
+        response = requests.get(url_geo, params=params, headers=headers, timeout=10)
+        dados = response.json()
+        
+        if dados:
+            lat = float(dados[0]['lat'])
+            lon = float(dados[0]['lon'])
+            
+            # Cria o mapa com folium
+            mapa = folium.Map(location=[lat, lon], zoom_start=16)
+            
+            # Adiciona marcador
+            folium.Marker(
+                [lat, lon],
+                popup=f"<b>CEP: {cep}</b><br>{rua}<br>{bairro}<br>{cidade}/{uf}",
+                icon=folium.Icon(color='red', icon='home')
+            ).add_to(mapa)
+            
+            # Salva em arquivo temporário
+            with tempfile.NamedTemporaryFile(suffix='.html', delete=False) as f:
+                mapa.save(f.name)
+                temp_file = f.name
+            
+            # Atualiza o mapa_view existente
+            mapa_view.setUrl(QUrl.fromLocalFile(temp_file))
+        else:
+            QMessageBox.warning(telaLogin, "Aviso", "Não foi possível encontrar a localização no mapa")
+            
+    except Exception as e:
+        QMessageBox.critical(telaLogin, "Erro", f"Erro ao gerar mapa: {str(e)}")
+
+def criar_mapa_inicial():
+    mapa = folium.Map(location=[-15.78, -47.92], zoom_start=4)
+    with tempfile.NamedTemporaryFile(suffix='.html', delete=False) as f:
+        mapa.save(f.name)
+        temp_file = f.name
+    mapa_view.setUrl(QUrl.fromLocalFile(temp_file))
 
 def conferirDataAtual():
     url = "https://todaysdatenow.com/pt-BR/tools/json-date/"
@@ -24,6 +85,8 @@ def conferirDataAtual():
 
 #Consultando CEP
 def tratarCEP(codigoCEP):
+    global ultimo_cep, ultima_rua, ultimo_bairro, ultima_cidade, ultimo_uf
+    
     url = f"https://viacep.com.br/ws/{codigoCEP}/json/"
     try:    
         response = requests.get(url)
@@ -31,10 +94,26 @@ def tratarCEP(codigoCEP):
         if response.status_code == 200:
             data = response.json()
             if "erro" not in data:
-                caixaTextoRua.setText(data.get("logradouro", ""))
-                caixaTextoBairro.setText(data.get("bairro", ""))
-                caixaTextoCidade.setText(data.get("localidade", ""))
-                caixaTextoUF.setText(data.get("uf", ""))
+                rua = data.get("logradouro", "")
+                bairro = data.get("bairro", "")
+                cidade = data.get("localidade", "")
+                uf = data.get("uf", "")
+                
+                caixaTextoRua.setText(rua)
+                caixaTextoBairro.setText(bairro)
+                caixaTextoCidade.setText(cidade)
+                caixaTextoUF.setText(uf)
+                
+                # Guarda os dados para usar no mapa
+                ultimo_cep = codigoCEP
+                ultima_rua = rua
+                ultimo_bairro = bairro
+                ultima_cidade = cidade
+                ultimo_uf = uf
+                
+                # JÁ ATUALIZA O MAPA AUTOMATICAMENTE
+                mostrar_mapa(ultimo_cep, ultima_rua, ultimo_bairro, ultima_cidade, ultimo_uf)
+                
             else:
                 QMessageBox.warning(telaLogin, "Erro", "CEP não encontrado.")
         else:
@@ -148,7 +227,6 @@ def limpaCampos():
 
 
 
-
 #Criando aplicação
 app = QApplication(sys.argv) 
 
@@ -156,6 +234,11 @@ app = QApplication(sys.argv)
 telaLogin = QWidget()
 telaLogin.setWindowTitle("Login")
 telaLogin.setGeometry(800, 800, 800, 800)
+
+mapa_view = QWebEngineView(telaLogin)
+mapa_view.setGeometry(400, 30, 380, 550)
+
+criar_mapa_inicial()
 
 #Rótulo(label)
 #Nome
@@ -202,7 +285,6 @@ textoRotuloUF = QLabel("UF:", telaLogin)
 textoRotuloUF.move(80, 530)
 
 
-
 #Criando caixa de texto
 #Nome
 caixaTextoNome = QLineEdit(telaLogin)
@@ -227,6 +309,7 @@ caixaTextoDataNascimento.move(80, 200)
 #Idade 
 caixaTextoIdade = QLineEdit(telaLogin)
 caixaTextoIdade.move(250 ,200)
+caixaTextoIdade.setEnabled(False)
 
 #Nome da Mãe
 caixaTextoNomeMae = QLineEdit(telaLogin)
@@ -268,7 +351,9 @@ caixaTextoUF.move(80, 550)
 caixaTextoUF.setEnabled(False)
 
 #Botão zoeira
-botaoZoeira
+botaoZueira = QPushButton("Ativar zueira?",telaLogin)
+botaoZueira.setCheckable(True)
+botaoZueira.move(250, 225)
 #Criando Botão de buca do CEP
 botaoBuscarCEP = QPushButton("Buscar", telaLogin)
 botaoBuscarCEP.move(200,350)
