@@ -1,8 +1,85 @@
-a pessoa deve ter ,no mínimo, 10 anos e no máximo 100 anos
-datas futuras ou inexistentes não são autorizadas
-permitir numero e letra no cep e rg
-n pode ter vírgula ou ponto e vírgula ou ponto nos campos
-o cep ser mostrado assim que tiver 8 números, independente se os outros campos foram preenchidos ou não
-mostrar a idade da pessoa com base na data dela e a data atual
-o rg, cpf, data de nascimento, senha e cep só podem funcionar com um limite mínimo de caracteres
-mostrar o horário que aconteceu o cadastro
+Botao de ativar, ou não, a classificação
+-------------------------------------------------------------------------------------------------------------------------
+# Criando botão toggle
+botaoZueira = QPushButton("Ativar Zueira", telaLogin)
+botaoZueira.setCheckable(True)  # agora funciona como toggle
+botaoZueira.move(350, 600)
+
+def mensagensZueira(idade):
+    if idade > 100:
+        print("Olá, Roberto Carlos")
+    elif idade == 100:
+        print("Pé na cova")
+    elif idade >= 60:
+        print("Passou da validade")
+    elif idade >= 30:
+        print("Véio(a) caduca")
+    elif idade >= 18:
+        print("Maior de idade")
+    elif idade >= 13:
+        print("Aborrecente")
+    else:
+        print("Cotoco de gente")
+
+# Integração no cadastro
+def validaCampos():
+    # ... (seu código de validação)
+    idade = calcIdade(dataNascimento)
+    caixaTextoIdade.setText(str(idade))
+
+    # Se o botão de zueira estiver ativado
+    if botaoZueira.isChecked():
+        mensagensZueira(idade)
+
+    # Continua com o login normal
+    login(nome, rg, cpf, dataNascimento, idade, nomeMae, senha, cep, rua, bairro, cidade, uf)
+
+-------------------------------------------------------------------------------------------------------------------------
+
+Mais uma sugestão
+-------------------------------------------------------------------------------------------------------------------------
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLabel
+from PyQt5.QtCore import Qt
+
+class ToggleButtonDemo(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("PyQt5 Toggle Button Example")
+        self.setGeometry(200, 200, 300, 150)
+
+        # Label to show toggle state
+        self.label = QLabel("State: OFF", self)
+        self.label.setAlignment(Qt.AlignCenter)
+
+        # Create a toggle button
+        self.toggle_btn = QPushButton("OFF", self)
+        self.toggle_btn.setCheckable(True)  # Enable toggle mode
+        self.toggle_btn.setStyleSheet("font-size: 16px; padding: 8px;")
+
+        # Connect signal to slot
+        self.toggle_btn.toggled.connect(self.on_toggle)
+
+        # Layout
+        layout = QVBoxLayout()
+        layout.addWidget(self.label)
+        layout.addWidget(self.toggle_btn)
+        self.setLayout(layout)
+
+    def on_toggle(self, checked):
+        """Handle toggle state changes."""
+        if checked:
+            self.toggle_btn.setText("ON")
+            self.label.setText("State: ON")
+            self.toggle_btn.setStyleSheet("background-color: lightgreen; font-size: 16px; padding: 8px;")
+        else:
+            self.toggle_btn.setText("OFF")
+            self.label.setText("State: OFF")
+            self.toggle_btn.setStyleSheet("background-color: lightcoral; font-size: 16px; padding: 8px;")
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = ToggleButtonDemo()
+    window.show()
+    sys.exit(app.exec_())
+-------------------------------------------------------------------------------------------------------------------------

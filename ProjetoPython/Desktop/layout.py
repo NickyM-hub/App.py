@@ -2,7 +2,6 @@ import requests
 import sys 
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QMessageBox, QDateEdit
 from PyQt5.QtCore import QDate
-
 #mini campo para guardar os dados do usuário
 def login(nome, rg, cpf, dataNascimento, idade, nomeMae, senha, cep, rua, bairro, cidade, uf):
     dataFormatada = dataNascimento.toString("dd/MM/yyyy")
@@ -44,6 +43,14 @@ def tratarCEP(codigoCEP):
     except Exception as e:
         QMessageBox.critical(telaLogin, "Erro", f"Ocorreu um erro: {str(e)}")
 
+
+def calcIdade(dataNascimento: QDate) -> int:
+    dataAtual = conferirDataAtual()
+    idade = dataAtual.year() - dataNascimento.year()
+    if (dataAtual.month(), dataAtual.day()) < (dataNascimento.month(), dataNascimento.day()):
+        idade -= 1
+    return idade
+
 #Verifiação de prenchimento dos campos  
 def validaCampos():
     nome = caixaTextoNome.text()
@@ -60,6 +67,7 @@ def validaCampos():
     uf = caixaTextoUF.text()
     dataAtual = QDate.currentDate()
     dataNascimento = QDate.fromString(dataNascimento, "dd/MM/yyyy")
+
 
     #Verificação de usuário e senha 
     if nome == '' or senha == '' or cpf == '..-' or dataNascimento == '//' or rg == '..-' or nomeMae == '' or cep == '.....-...' or rua == '' or bairro == '' or cidade == '' or uf == '':
@@ -120,11 +128,6 @@ def validaCampos():
     else:
         login(nome, rg, cpf, dataNascimento, nomeMae, senha, cep, rua, bairro, cidade, uf)
 
-#fazendo 
-def classificandoIdade():
-
-
-
 
 #Limpar Campos
 def limpaCampos():
@@ -170,6 +173,10 @@ textoRotuloRg.move(80, 130)
 #Data de Nascimento
 textoRotuloDataNascimento = QLabel('Data de Nascimento: ', telaLogin)
 textoRotuloDataNascimento.move(80, 180)
+
+#Idade
+textoRotuloIdade = QLabel('Idade: ', telaLogin)
+textoRotuloIdade.move(250, 180)
 
 #Nome da Mãe
 textoRotuloNomeMae = QLabel('Nome da Mãe: ', telaLogin) 
@@ -217,6 +224,10 @@ caixaTextoDataNascimento = QLineEdit(telaLogin)
 caixaTextoDataNascimento.setInputMask("00/00/0000")
 caixaTextoDataNascimento.move(80, 200)
 
+#Idade 
+caixaTextoIdade = QLineEdit(telaLogin)
+caixaTextoIdade.move(250 ,200)
+
 #Nome da Mãe
 caixaTextoNomeMae = QLineEdit(telaLogin)
 caixaTextoNomeMae.move(80, 250)
@@ -228,7 +239,7 @@ caixaTextoSenha.move(80, 300)
 
 #CEP
 caixaTextoCEP = QLineEdit(telaLogin)
-caixaTextoCEP.setInputMask("NNNNN-NNN")
+caixaTextoCEP.setInputMask("00000-000")
 caixaTextoCEP.setFixedWidth(80)
 caixaTextoCEP.move(80, 350)
 
@@ -256,6 +267,8 @@ caixaTextoUF.setFixedWidth(30)
 caixaTextoUF.move(80, 550)
 caixaTextoUF.setEnabled(False)
 
+#Botão zoeira
+botaoZoeira
 #Criando Botão de buca do CEP
 botaoBuscarCEP = QPushButton("Buscar", telaLogin)
 botaoBuscarCEP.move(200,350)
