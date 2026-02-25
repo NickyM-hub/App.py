@@ -83,3 +83,41 @@ if __name__ == "__main__":
     window.show()
     sys.exit(app.exec_())
 -------------------------------------------------------------------------------------------------------------------------
+
+def tratarCEP(codigoCEP):
+    url = f"https://viacep.com.br/ws/{codigoCEP}/json/"
+    try:    
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            data = response.json()
+            if "erro" not in data:
+                rua = data.get("logradouro", "")
+                bairro = data.get("bairro", "")
+                cidade = data.get("localidade", "")
+                uf = data.get("uf", "")
+                
+                caixaTextoRua.setText(rua)
+                caixaTextoBairro.setText(bairro)
+                caixaTextoCidade.setText(cidade)
+                caixaTextoUF.setText(uf)
+                
+                # Guarda os dados para usar no mapa
+                ultimo_cep = codigoCEP
+                ultima_rua = rua
+                ultimo_bairro = bairro
+                ultima_cidade = cidade
+                ultimo_uf = uf
+                
+                # Habilita o botão do mapa
+                botaoVerMapa.setEnabled(True)
+
+                caixaTextoRua.setText(data.get("logradouro", ""))
+                caixaTextoBairro.setText(data.get("bairro", ""))
+                caixaTextoCidade.setText(data.get("localidade", ""))
+                caixaTextoUF.setText(data.get("uf", ""))
+            else:
+                QMessageBox.warning(telaLogin, "Erro", "CEP não encontrado.")
+                botaoVerMapa.setEnabled(False)
+        else:
+            QMessageBox.critical(telaLogin, "Erro", "Falha na consulta do CEP.")

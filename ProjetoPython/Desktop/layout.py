@@ -6,6 +6,7 @@ import os
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QMessageBox, QDateEdit
 from PyQt5.QtCore import QDate, QUrl
+from datetime import date, datetime
 
 ultimo_cep = ""
 ultima_rua = ""
@@ -19,7 +20,6 @@ def login(nome, rg, cpf, dataNascimento, idade, nomeMae, senha, cep, rua, bairro
     QMessageBox.information(telaLogin, "Cadastro concluído com sucesso!", f"Bem-vindo, {nome}!\nRG: {rg}\nCPF: {cpf}\nData de Nascimento: {dataFormatada}\n Idade: {idade}\nNome da Mãe: {nomeMae}")
 
 def mostrar_mapa(cep, rua, bairro, cidade, uf):
-    """Atualiza o mapa com a localização do CEP"""
     try:
         # Converte endereço em coordenadas
         endereco = f"{rua}, {bairro}, {cidade}, {uf}, Brasil"
@@ -74,7 +74,13 @@ def conferirDataAtual():
         response = requests.get(url)
         if response.status_code == 200:
             data = response.json()
-            dataAtual = data.get("date")
+
+            # pega só a parte da data
+            date_str = data["date"].split("T")[0]
+
+            # converte para objeto datetime
+            dataAtual = datetime.strptime(date_str, "%Y-%m-%d")            
+
             return dataAtual
         else:
             QMessageBox.critical(telaLogin, "Erro", "Falha na consulta da data atual.\nVerifique sua conexão com a internet.")
@@ -124,11 +130,59 @@ def tratarCEP(codigoCEP):
 
 
 def calcIdade(dataNascimento: QDate) -> int:
-    dataAtual = conferirDataAtual()
-    idade = dataAtual.year() - dataNascimento.year()
-    if (dataAtual.month(), dataAtual.day()) < (dataNascimento.month(), dataNascimento.day()):
-        idade -= 1
-    return idade
+    #dataAtual = conferirDataAtual()
+    #VAmos ver daqui...
+    #####dataAtual = datetime.strptime(conferirDataAtual(), "%Y-%m-%d")
+
+    # data do QDateEdit
+    dataNascimento_qdate = dataNascimento  # QDate do PyQt
+
+    # converte para datetime.date
+    dataNascimento = date(
+        dataNascimento_qdate.year(),
+        dataNascimento_qdate.month(),
+        dataNascimento_qdate.day()
+    )
+
+    # data atual
+    dataAtual = date.today()
+
+    # cálculo de idade
+    if (dataAtual.month, dataAtual.day) < (dataNascimento.month, dataNascimento.day):
+        idade = dataAtual.year - dataNascimento.year - 1
+    else:
+        idade = dataAtual.year - dataNascimento.year
+
+    print(f"Idade: {idade}")
+
+
+
+
+
+
+
+
+
+    # print(dataAtual)
+   
+    # if dataAtual > dataNascimento:
+    #     idade = dataAtual - dataNascimento
+
+    # return idade
+
+def mensagensZueira(idade):
+    if idade >= 90:
+        print("Pé na cova")
+    elif idade >= 60:
+        print("Passou da validade")
+    elif idade >= 30:
+        print("Véio(a) caduca")
+    elif idade >= 18:
+        print("Maior de idade")
+    elif idade >= 13:
+        print("Aborrecente")
+    else:
+        print("Cotoco de gente")
 
 #Verifiação de prenchimento dos campos  
 def validaCampos():
@@ -136,7 +190,6 @@ def validaCampos():
     cpf = caixaTextoCpf.text()
     dataNascimento = caixaTextoDataNascimento.text()
     rg = caixaTextoRg.text()
-    idade = caixaTextoIdade.text()
     nomeMae = caixaTextoNomeMae.text() 
     senha = caixaTextoSenha.text()
     cep = caixaTextoCEP.text()
@@ -144,8 +197,13 @@ def validaCampos():
     bairro = caixaTextoBairro.text()
     cidade = caixaTextoCidade.text()
     uf = caixaTextoUF.text()
-    dataAtual = QDate.currentDate()
+    dataAtual = QDate.currentDate()    
     dataNascimento = QDate.fromString(dataNascimento, "dd/MM/yyyy")
+    idade = calcIdade(dataNascimento)
+    caixaTextoIdade.setText(str(idade))
+    if botaoZueira.isChecked():
+        mensagensZueira(idade)
+
 
 
     #Verificação de usuário e senha 
@@ -205,7 +263,7 @@ def validaCampos():
         return
     
     else:
-        login(nome, rg, cpf, dataNascimento, nomeMae, senha, cep, rua, bairro, cidade, uf)
+        login(nome, rg, cpf, dataNascimento, idade, nomeMae, senha, cep, rua, bairro, cidade, uf)
 
 
 #Limpar Campos
