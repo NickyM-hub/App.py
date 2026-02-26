@@ -19,6 +19,45 @@ def login(nome, rg, cpf, dataNascimento, idade, nomeMae, senha, cep, rua, bairro
     dataFormatada = dataNascimento.toString("dd/MM/yyyy")
     QMessageBox.information(telaLogin, "Cadastro concluído com sucesso!", f"Bem-vindo, {nome}!\nRG: {rg}\nCPF: {cpf}\nData de Nascimento: {dataFormatada}\nIdade: {idade}\nNome da Mãe: {nomeMae}")
 
+#Consultando CEP
+def tratarCEP(codigoCEP):
+    global ultimo_cep, ultima_rua, ultimo_bairro, ultima_cidade, ultimo_uf
+    
+    url = f"https://viacep.com.br/ws/{codigoCEP}/json/"
+    try:    
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            data = response.json()
+            if "erro" not in data:
+                rua = data.get("logradouro", "")
+                bairro = data.get("bairro", "")
+                cidade = data.get("localidade", "")
+                uf = data.get("uf", "")
+
+                
+                caixaTextoRua.setText(rua)
+                caixaTextoBairro.setText(bairro)
+                caixaTextoCidade.setText(cidade)
+                caixaTextoUF.setText(uf)
+                
+                # Guarda os dados para usar no mapa
+                ultimo_cep = codigoCEP
+                ultima_rua = rua
+                ultimo_bairro = bairro
+                ultima_cidade = cidade
+                ultimo_uf = uf
+                
+                # JÁ ATUALIZA O MAPA AUTOMATICAMENTE
+                mostrar_mapa(ultimo_cep, ultima_rua, ultimo_bairro, ultima_cidade, ultimo_uf)
+                
+            else:
+                QMessageBox.warning(telaLogin, "Erro", "CEP não encontrado.")
+        else:
+            QMessageBox.critical(telaLogin, "Erro", "Falha na consulta do CEP.")
+
+    except Exception as e:
+        QMessageBox.critical(telaLogin, "Erro", f"Ocorreu um erro: {str(e)}")
 
 def mostrar_mapa(cep, rua, bairro, cidade, uf):
     try:
@@ -89,46 +128,6 @@ def conferirDataAtual():
     except Exception as e:
         QMessageBox.critical(telaLogin, "Erro", f"Ocorreu um erro: {str(e)}")
         return None
-
-#Consultando CEP
-def tratarCEP(codigoCEP):
-    global ultimo_cep, ultima_rua, ultimo_bairro, ultima_cidade, ultimo_uf
-    
-    url = f"https://viacep.com.br/ws/{codigoCEP}/json/"
-    try:    
-        response = requests.get(url)
-
-        if response.status_code == 200:
-            data = response.json()
-            if "erro" not in data:
-                rua = data.get("logradouro", "")
-                bairro = data.get("bairro", "")
-                cidade = data.get("localidade", "")
-                uf = data.get("uf", "")
-
-                
-                caixaTextoRua.setText(rua)
-                caixaTextoBairro.setText(bairro)
-                caixaTextoCidade.setText(cidade)
-                caixaTextoUF.setText(uf)
-                
-                # Guarda os dados para usar no mapa
-                ultimo_cep = codigoCEP
-                ultima_rua = rua
-                ultimo_bairro = bairro
-                ultima_cidade = cidade
-                ultimo_uf = uf
-                
-                # JÁ ATUALIZA O MAPA AUTOMATICAMENTE
-                mostrar_mapa(ultimo_cep, ultima_rua, ultimo_bairro, ultima_cidade, ultimo_uf)
-                
-            else:
-                QMessageBox.warning(telaLogin, "Erro", "CEP não encontrado.")
-        else:
-            QMessageBox.critical(telaLogin, "Erro", "Falha na consulta do CEP.")
-
-    except Exception as e:
-        QMessageBox.critical(telaLogin, "Erro", f"Ocorreu um erro: {str(e)}")
 
 
 def calcIdade(dataNascimento):
