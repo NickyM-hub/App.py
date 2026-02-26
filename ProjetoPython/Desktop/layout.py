@@ -17,7 +17,8 @@ ultimo_uf = ""
 #mini campo para guardar os dados do usuário
 def login(nome, rg, cpf, dataNascimento, idade, nomeMae, senha, cep, rua, bairro, cidade, uf):
     dataFormatada = dataNascimento.toString("dd/MM/yyyy")
-    QMessageBox.information(telaLogin, "Cadastro concluído com sucesso!", f"Bem-vindo, {nome}!\nRG: {rg}\nCPF: {cpf}\nData de Nascimento: {dataFormatada}\n Idade: {idade}\nNome da Mãe: {nomeMae}")
+    QMessageBox.information(telaLogin, "Cadastro concluído com sucesso!", f"Bem-vindo, {nome}!\nRG: {rg}\nCPF: {cpf}\nData de Nascimento: {dataFormatada}\nIdade: {idade}\nNome da Mãe: {nomeMae}")
+
 
 def mostrar_mapa(cep, rua, bairro, cidade, uf):
     try:
@@ -104,6 +105,7 @@ def tratarCEP(codigoCEP):
                 bairro = data.get("bairro", "")
                 cidade = data.get("localidade", "")
                 uf = data.get("uf", "")
+
                 
                 caixaTextoRua.setText(rua)
                 caixaTextoBairro.setText(bairro)
@@ -129,46 +131,19 @@ def tratarCEP(codigoCEP):
         QMessageBox.critical(telaLogin, "Erro", f"Ocorreu um erro: {str(e)}")
 
 
-def calcIdade(dataNascimento: QDate) -> int:
-    #dataAtual = conferirDataAtual()
-    #VAmos ver daqui...
-    #####dataAtual = datetime.strptime(conferirDataAtual(), "%Y-%m-%d")
+def calcIdade(dataNascimento):
 
-    # data do QDateEdit
-    dataNascimento_qdate = dataNascimento  # QDate do PyQt
+    data_nascimento = date(
+        dataNascimento.year(),
+        dataNascimento.month(),
+        dataNascimento.day()
+    )    
 
-    # converte para datetime.date
-    dataNascimento = date(
-        dataNascimento_qdate.year(),
-        dataNascimento_qdate.month(),
-        dataNascimento_qdate.day()
-    )
-
-    # data atual
-    dataAtual = date.today()
-
-    # cálculo de idade
-    if (dataAtual.month, dataAtual.day) < (dataNascimento.month, dataNascimento.day):
-        idade = dataAtual.year - dataNascimento.year - 1
-    else:
-        idade = dataAtual.year - dataNascimento.year
-
-    print(f"Idade: {idade}")
-
-
-
-
-
-
-
-
-
-    # print(dataAtual)
-   
-    # if dataAtual > dataNascimento:
-    #     idade = dataAtual - dataNascimento
-
-    # return idade
+    hoje = QDate.currentDate()    
+    
+    idade = hoje.year() - data_nascimento.year  
+    
+    return idade
 
 def mensagensZueira(idade):
     if idade >= 90:
