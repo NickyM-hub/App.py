@@ -21,8 +21,7 @@ def login(nome, rg, cpf, dataNascimento, idade, nomeMae, senha, cep, rua, bairro
 
 #Consultando CEP
 def tratarCEP(codigoCEP):
-    global ultimo_cep, ultima_rua, ultimo_bairro, ultima_cidade, ultimo_uf
-    
+    global ultimo_cep, ultima_rua, ultimo_bairro, ultima_cidade, ultimo_uf  
     url = f"https://viacep.com.br/ws/{codigoCEP}/json/"
     try:    
         response = requests.get(url)
@@ -34,21 +33,17 @@ def tratarCEP(codigoCEP):
                 bairro = data.get("bairro", "")
                 cidade = data.get("localidade", "")
                 uf = data.get("uf", "")
-
-                
+       
                 caixaTextoRua.setText(rua)
                 caixaTextoBairro.setText(bairro)
                 caixaTextoCidade.setText(cidade)
                 caixaTextoUF.setText(uf)
                 
-                # Guarda os dados para usar no mapa
                 ultimo_cep = codigoCEP
                 ultima_rua = rua
                 ultimo_bairro = bairro
                 ultima_cidade = cidade
                 ultimo_uf = uf
-                
-                # JÁ ATUALIZA O MAPA AUTOMATICAMENTE
                 mostrar_mapa(ultimo_cep, ultima_rua, ultimo_bairro, ultima_cidade, ultimo_uf)
                 
             else:
