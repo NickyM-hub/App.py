@@ -2,19 +2,20 @@ import requests
 import folium
 import sys 
 import tempfile
-import os
+import time
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QMessageBox, QDateEdit
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QMessageBox
 from PyQt5.QtCore import QDate, QUrl
 from datetime import date, datetime
 
+#variáveis globais
 ultimo_cep = ""
 ultima_rua = ""
 ultimo_bairro = ""
 ultima_cidade = ""
 ultimo_uf = ""
 
-#mini campo para guardar os dados do usuário
+#guardar dados do usuário
 def login(nome, rg, cpf, dataNascimento, idade, nomeMae, senha, cep, rua, bairro, cidade, uf):
     dataFormatada = dataNascimento.toString("dd/MM/yyyy")
     QMessageBox.information(telaLogin, "Cadastro concluído com sucesso!", f"Bem-vindo, {nome}!\nRG: {rg}\nCPF: {cpf}\nData de Nascimento: {dataFormatada}\nIdade: {idade}\nNome da Mãe: {nomeMae}")
@@ -55,8 +56,9 @@ def tratarCEP(codigoCEP):
         QMessageBox.critical(telaLogin, "Erro", f"Ocorreu um erro: {str(e)}")
 
 def mostrar_mapa(cep, rua, bairro, cidade, uf):
+    time.sleep(1)
     try:
-        # Converte endereço em coordenadas
+        #converção de endereço
         endereco = f"{rua}, {bairro}, {cidade}, {uf}, Brasil"
         url_geo = "https://nominatim.openstreetmap.org/search"
         params = {
@@ -64,7 +66,9 @@ def mostrar_mapa(cep, rua, bairro, cidade, uf):
             'format': 'json',
             'limit': 1
         }
-        headers = {'User-Agent': 'Mozilla/5.0'}
+        headers = {
+            'User-Agent': 'SistemaCadastroEndereco/1.0 (mouranicole09@gmail.com)'
+        }
         
         response = requests.get(url_geo, params=params, headers=headers, timeout=10)
         dados = response.json()
@@ -73,22 +77,22 @@ def mostrar_mapa(cep, rua, bairro, cidade, uf):
             lat = float(dados[0]['lat'])
             lon = float(dados[0]['lon'])
             
-            # Cria o mapa com folium
+            #mapa
             mapa = folium.Map(location=[lat, lon], zoom_start=16)
             
-            # Adiciona marcador
+            #marcador
             folium.Marker(
                 [lat, lon],
                 popup=f"<b>CEP: {cep}</b><br>{rua}<br>{bairro}<br>{cidade}/{uf}",
                 icon=folium.Icon(color='red', icon='home')
             ).add_to(mapa)
             
-            # Salva em arquivo temporário
+            #arquivo temporário
             with tempfile.NamedTemporaryFile(suffix='.html', delete=False) as f:
                 mapa.save(f.name)
                 temp_file = f.name
             
-            # Atualiza o mapa_view existente
+            # Atualiza o mapa
             mapa_view.setUrl(QUrl.fromLocalFile(temp_file))
         else:
             QMessageBox.warning(telaLogin, "Aviso", "Não foi possível encontrar a localização no mapa")
@@ -124,6 +128,31 @@ def conferirDataAtual():
         QMessageBox.critical(telaLogin, "Erro", f"Ocorreu um erro: {str(e)}")
         return None
 
+def mensagensZueira(idade):
+    if idade >= 90:
+        print("Patrocinado por: Dentadura Sorriso e Andador Speed")
+    elif idade >= 80:
+        print("Fila do banco virou a única atividade social da semana")
+    elif idade >= 70:
+        print("Remédio genérico é seu melhor amigo")
+    elif idade >= 60:
+        print("Passou da validade")
+    elif idade >= 50:
+        print("'No meu tempo é que era bom...'")
+    elif idade >= 40:
+        print("Barriga de chope: oficializada")
+    elif idade >= 30:
+        print("Sentiu dor na lombar só de ler isso")
+    elif idade >= 20:
+        print("Crise dos 20: 'Já era pra eu estar...")
+    elif idade >= 18:
+        print("Maior de idade")
+    elif idade >= 13:
+        print("Aborrecente")
+    elif idade >= 10:
+        print("Merenda escolar virou o único motivo pra ir à aula")
+    else:
+        print("Cotoco de gente")
 
 def calcIdade(dataNascimento):
 
@@ -138,20 +167,6 @@ def calcIdade(dataNascimento):
     idade = hoje.year() - data_nascimento.year  
     
     return idade
-
-def mensagensZueira(idade):
-    if idade >= 90:
-        print("Pé na cova")
-    elif idade >= 60:
-        print("Passou da validade")
-    elif idade >= 30:
-        print("Véio(a) caduca")
-    elif idade >= 18:
-        print("Maior de idade")
-    elif idade >= 13:
-        print("Aborrecente")
-    else:
-        print("Cotoco de gente")
 
 #Verifiação de prenchimento dos campos  
 def validaCampos():
@@ -211,10 +226,10 @@ def validaCampos():
         QMessageBox.critical(telaLogin, "Atenção", "Data de nascimento inválida.")
         return
     #verificação de idade
-    if QDate(dataAtual).year() - QDate(dataNascimento).year() < 5:
+    if idade < 5:
         QMessageBox.critical(telaLogin, "Atenção", "O usuário deve ter mais de 5 anos.")
         return
-    if QDate(dataAtual).year() - QDate(dataNascimento).year() > 100:
+    if idade > 100:
         QMessageBox.critical(telaLogin, "Atenção", "O usuário deve ter menos que 100 anos.")
         return
     
@@ -378,7 +393,7 @@ caixaTextoUF.move(80, 550)
 caixaTextoUF.setEnabled(False)
 
 #Botão zoeira
-botaoZueira = QPushButton("Ativar zueira?",telaLogin)
+botaoZueira = QPushButton("Ver classificação?",telaLogin)
 botaoZueira.setCheckable(True)
 botaoZueira.move(250, 225)
 #Criando Botão de buca do CEP
