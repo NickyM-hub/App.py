@@ -16,9 +16,9 @@ ultima_cidade = ""
 ultimo_uf = ""
 
 #guardar dados do usuário
-def login(nome, rg, cpf, dataNascimento, idade, nomeMae, senha, cep, rua, bairro, cidade, uf):
+def login(nome, cin, dataNascimento, idade, nomeMae, senha, cep, rua, bairro, cidade, uf):
     dataFormatada = dataNascimento.toString("dd/MM/yyyy")
-    QMessageBox.information(telaLogin, "Cadastro concluído com sucesso!", f"Bem-vindo, {nome}!\nRG: {rg}\nCPF: {cpf}\nData de Nascimento: {dataFormatada}\nIdade: {idade}\nNome da Mãe: {nomeMae}")
+    QMessageBox.information(telaLogin, "Cadastro concluído com sucesso!", f"Bem-vindo, {nome}!\nCIN: {cin}\nData de Nascimento: {dataFormatada}\nIdade: {idade}\nNome da Mãe: {nomeMae}")
 
 #Consultando CEP
 def tratarCEP(codigoCEP):
@@ -175,9 +175,8 @@ def calcIdade(dataNascimento):
 #Verifiação de prenchimento dos campos  
 def validaCampos():
     nome = caixaTextoNome.text()
-    cpf = caixaTextoCpf.text()
+    cin = caixaTextoCIN.text()
     dataNascimento = caixaTextoDataNascimento.text()
-    rg = caixaTextoRg.text()
     nomeMae = caixaTextoNomeMae.text() 
     senha = caixaTextoSenha.text()
     cep = caixaTextoCEP.text()
@@ -195,7 +194,7 @@ def validaCampos():
 
 
     #Verificação de usuário e senha 
-    if nome == '' or senha == '' or cpf == '..-' or dataNascimento == '//' or rg == '..-' or nomeMae == '' or cep == '.....-...' or rua == '' or bairro == '' or cidade == '' or uf == '':
+    if nome == '' or senha == '' or cin == '..-' or dataNascimento == '//' or nomeMae == '' or cep == '.....-...' or rua == '' or bairro == '' or cidade == '' or uf == '':
         QMessageBox.critical(telaLogin, "Atenção", "Para validação todos os campos devem ser informados")
     if nome == senha or nomeMae == senha:
         QMessageBox.critical(telaLogin, "Aviso!", "a senha não pode ser igual ao nome")
@@ -237,29 +236,20 @@ def validaCampos():
         QMessageBox.critical(telaLogin, "Atenção", "O usuário deve ter menos que 100 anos.")
         return
     
-    #verificação de RG
-    if len(rg) != 12:
-        QMessageBox.critical(telaLogin, "Atenção", "O RG deve conter 9 caracteres")
-        return
-    if any(i in rg for i in [';', ',', '+', 'ç']):
-        QMessageBox.critical(telaLogin, "Atenção", "O rg não pode conter caracteres especiais com ponto e vírgula etc.")
-        return
-    
     #verificação de CPF
-    if len(cpf) != 14:
+    if len(cin) != 14:
         QMessageBox.critical(telaLogin, "Atenção", "O CPF deve conter 11 números")
         return
     
     else:
-        login(nome, rg, cpf, dataNascimento, idade, nomeMae, senha, cep, rua, bairro, cidade, uf)
+        login(nome, cin, dataNascimento, idade, nomeMae, senha, cep, rua, bairro, cidade, uf)
 
 
 #Limpar Campos
 def limpaCampos():
     caixaTextoNome.clear()
-    caixaTextoCpf.clear()
+    caixaTextoCIN.clear()
     caixaTextoDataNascimento.clear()
-    caixaTextoRg.clear()
     caixaTextoNomeMae.clear()
     caixaTextoSenha.clear()
     caixaTextoCEP.clear()
@@ -292,12 +282,8 @@ textoRotuloNome = QLabel('Nome Completo:', telaLogin)
 textoRotuloNome.move(80, 30)
 
 #CPF
-textoRotuloCpf = QLabel('CPF: ', telaLogin)
-textoRotuloCpf.move(80, 80)
-
-#RG
-textoRotuloRg = QLabel('RG: ', telaLogin)
-textoRotuloRg.move(80, 130)
+textoRotuloCIN = QLabel('CIN (CPF): ', telaLogin)
+textoRotuloCIN.move(80, 80)
 
 #Data de Nascimento
 textoRotuloDataNascimento = QLabel('Data de Nascimento: ', telaLogin)
@@ -337,15 +323,9 @@ caixaTextoNome = QLineEdit(telaLogin)
 caixaTextoNome.move(80, 50)
 
 #CPF
-caixaTextoCpf = QLineEdit(telaLogin)
-caixaTextoCpf.setInputMask("000.000.000-00")
-caixaTextoCpf.move(80, 100)
-
-#RG
-caixaTextoRg = QLineEdit(telaLogin)
-caixaTextoRg.setInputMask("NN.NNN.NNN-N")
-caixaTextoRg.setCursorPosition(0)
-caixaTextoRg.move(80, 150)
+caixaTextoCIN = QLineEdit(telaLogin)
+caixaTextoCIN.setInputMask("000.000.000-00")
+caixaTextoCIN.move(80, 100)
 
 #Data de Nascimento
 caixaTextoDataNascimento = QLineEdit(telaLogin)
