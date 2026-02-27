@@ -153,8 +153,10 @@ def mensagensZueira(idade):
         print("Aborrecente")
     elif idade >= 10:
         print("Merenda escolar virou o único motivo pra ir à aula")
-    else:
+    elif idade >= 5:
         print("Cotoco de gente")
+    else:
+        print("Pedido negado")
 
 def calcIdade(dataNascimento):
 
