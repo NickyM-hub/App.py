@@ -132,13 +132,13 @@ def mensagensZueira(idade):
     if idade >= 100:
         print("Pedido negado")
     elif idade >= 90:
-        print("Patrocinado por: Dentadura Sorriso e Andador Speed")
+        print("Testemunha ocular da invenção da roda")
     elif idade >= 80:
-        print("Fila do banco virou a única atividade social da semana")
+        print("Patrocinado por: Dentadura Sorriso e Andador Speed")
     elif idade >= 70:
-        print("Remédio genérico é seu melhor amigo")
+        print("Fila do banco virou a única atividade social da semana")
     elif idade >= 60:
-        print("Passou da validade")
+        print("Remédio genérico é seu melhor amigo")
     elif idade >= 50:
         print("'No meu tempo é que era bom...'")
     elif idade >= 40:
