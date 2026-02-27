@@ -129,7 +129,9 @@ def conferirDataAtual():
         return None
 
 def mensagensZueira(idade):
-    if idade >= 90:
+    if idade >= 100:
+        print("Pedido negado")
+    elif idade >= 90:
         print("Patrocinado por: Dentadura Sorriso e Andador Speed")
     elif idade >= 80:
         print("Fila do banco virou a única atividade social da semana")
