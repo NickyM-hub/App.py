@@ -1,123 +1,27 @@
-Botao de ativar, ou não, a classificação
--------------------------------------------------------------------------------------------------------------------------
-# Criando botão toggle
-botaoZueira = QPushButton("Ativar Zueira", telaLogin)
-botaoZueira.setCheckable(True)  # agora funciona como toggle
-botaoZueira.move(350, 600)
+Página: 
+    https://www.timeapi.io/
 
-def mensagensZueira(idade):
-    if idade > 100:
-        print("Olá, Roberto Carlos")
-    elif idade == 100:
-        print("Pé na cova")
-    elif idade >= 60:
-        print("Passou da validade")
-    elif idade >= 30:
-        print("Véio(a) caduca")
-    elif idade >= 18:
-        print("Maior de idade")
-    elif idade >= 13:
-        print("Aborrecente")
-    else:
-        print("Cotoco de gente")
+API de data: Recebe o carimbo de tempo atual do Unix (milissegundos desde 1970-01-01 UTC).
 
-# Integração no cadastro
-def validaCampos():
-    # ... (seu código de validação)
-    idade = calcIdade(dataNascimento)
-    caixaTextoIdade.setText(str(idade))
+URL: 
+    https://www.timeapi.io/api/v1/time/current/unix
 
-    # Se o botão de zueira estiver ativado
-    if botaoZueira.isChecked():
-        mensagensZueira(idade)
+Curl:
+-----------------------------------------------------------
+    curl -X 'GET' \
+    'https://www.timeapi.io/api/v1/time/current/unix' \
+    -H 'accept: */*'
+-----------------------------------------------------------
 
-    # Continua com o login normal
-    login(nome, rg, cpf, dataNascimento, idade, nomeMae, senha, cep, rua, bairro, cidade, uf)
+Código:
+    {
+    "unix_timestamp": 1772203323
+    }
 
--------------------------------------------------------------------------------------------------------------------------
-
-Mais uma sugestão
--------------------------------------------------------------------------------------------------------------------------
-import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QLabel
-from PyQt5.QtCore import Qt
-
-class ToggleButtonDemo(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("PyQt5 Toggle Button Example")
-        self.setGeometry(200, 200, 300, 150)
-
-        # Label to show toggle state
-        self.label = QLabel("State: OFF", self)
-        self.label.setAlignment(Qt.AlignCenter)
-
-        # Create a toggle button
-        self.toggle_btn = QPushButton("OFF", self)
-        self.toggle_btn.setCheckable(True)  # Enable toggle mode
-        self.toggle_btn.setStyleSheet("font-size: 16px; padding: 8px;")
-
-        # Connect signal to slot
-        self.toggle_btn.toggled.connect(self.on_toggle)
-
-        # Layout
-        layout = QVBoxLayout()
-        layout.addWidget(self.label)
-        layout.addWidget(self.toggle_btn)
-        self.setLayout(layout)
-
-    def on_toggle(self, checked):
-        """Handle toggle state changes."""
-        if checked:
-            self.toggle_btn.setText("ON")
-            self.label.setText("State: ON")
-            self.toggle_btn.setStyleSheet("background-color: lightgreen; font-size: 16px; padding: 8px;")
-        else:
-            self.toggle_btn.setText("OFF")
-            self.label.setText("State: OFF")
-            self.toggle_btn.setStyleSheet("background-color: lightcoral; font-size: 16px; padding: 8px;")
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = ToggleButtonDemo()
-    window.show()
-    sys.exit(app.exec_())
--------------------------------------------------------------------------------------------------------------------------
-
-def tratarCEP(codigoCEP):
-    url = f"https://viacep.com.br/ws/{codigoCEP}/json/"
-    try:    
-        response = requests.get(url)
-
-        if response.status_code == 200:
-            data = response.json()
-            if "erro" not in data:
-                rua = data.get("logradouro", "")
-                bairro = data.get("bairro", "")
-                cidade = data.get("localidade", "")
-                uf = data.get("uf", "")
-                
-                caixaTextoRua.setText(rua)
-                caixaTextoBairro.setText(bairro)
-                caixaTextoCidade.setText(cidade)
-                caixaTextoUF.setText(uf)
-                
-                # Guarda os dados para usar no mapa
-                ultimo_cep = codigoCEP
-                ultima_rua = rua
-                ultimo_bairro = bairro
-                ultima_cidade = cidade
-                ultimo_uf = uf
-                
-                # Habilita o botão do mapa
-                botaoVerMapa.setEnabled(True)
-
-                caixaTextoRua.setText(data.get("logradouro", ""))
-                caixaTextoBairro.setText(data.get("bairro", ""))
-                caixaTextoCidade.setText(data.get("localidade", ""))
-                caixaTextoUF.setText(data.get("uf", ""))
-            else:
-                QMessageBox.warning(telaLogin, "Erro", "CEP não encontrado.")
-                botaoVerMapa.setEnabled(False)
-        else:
-            QMessageBox.critical(telaLogin, "Erro", "Falha na consulta do CEP.")
+    connection: keep-alive 
+    content-encoding: gzip 
+    content-type: application/json; charset=utf-8 
+    date: Fri,27 Feb 2026 14:42:03 GMT 
+    server: nginx/1.29.4 
+    transfer-encoding: chunked 
+    vary: Accept-Encoding 
