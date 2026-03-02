@@ -192,7 +192,6 @@ def validaCampos():
         mensagensZueira(idade)
 
 
-
     #Verificação de usuário e senha 
     if nome == '' or senha == '' or cin == '..-' or dataNascimento == '//' or nomeMae == '' or cep == '.....-...' or rua == '' or bairro == '' or cidade == '' or uf == '':
         QMessageBox.critical(telaLogin, "Atenção", "Para validação todos os campos devem ser informados")
@@ -284,6 +283,8 @@ textoRotuloNome.move(80, 30)
 #CPF
 textoRotuloCIN = QLabel('CIN (CPF): ', telaLogin)
 textoRotuloCIN.move(80, 80)
+
+
 
 #Data de Nascimento
 textoRotuloDataNascimento = QLabel('Data de Nascimento: ', telaLogin)
@@ -379,7 +380,28 @@ caixaTextoUF.setEnabled(False)
 #Botão zoeira
 botaoZueira = QPushButton("Ver classificação?",telaLogin)
 botaoZueira.setCheckable(True)
+botaoZueira.setObjectName('botaoZueira')
 botaoZueira.move(250, 225)
+
+botaoZueira.setStyleSheet("""
+            QPushButton {
+                background-color: #999999;
+                color: white;
+            }
+            QPushButton:hover {
+                background-color: #fffa5e;
+                color: #000000;
+            }
+            QPushButton:pressed {
+                background-color: #a4ff5e;
+                color: #000000;
+            }
+            QPushButton:checked {
+                background-color: #a4ff5e;
+                color: #000000;
+            }
+""")
+
 #Criando Botão de buca do CEP
 botaoBuscarCEP = QPushButton("Buscar", telaLogin)
 botaoBuscarCEP.move(200,350)
