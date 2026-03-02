@@ -276,6 +276,10 @@ mapa_view.setGeometry(400, 30, 380, 550)
 
 criar_mapa_inicial()
 
+with open("estilo.qss", "r") as arquivo_qss:
+    estilo = arquivo_qss.read()
+    app.setStyleSheet(estilo)
+
 #Rótulo(label)
 #Nome
 textoRotuloNome = QLabel('Nome Completo:', telaLogin)
