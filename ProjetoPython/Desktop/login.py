@@ -40,14 +40,6 @@ telaLogin = QWidget()
 telaLogin.setWindowTitle("Login")
 telaLogin.setGeometry(100, 100, 300, 200)
 
-telaLogin.setStyleSheet("""
-QWidget {
-    background-color: #def9fa;
-    border: 1px solid #000000;
-    border-radius: 10px;
-}
-""")
-
 #Rótulo(label)
 #Usuário
 textoRotuloUsuario = QLabel('Usuário:', telaLogin)

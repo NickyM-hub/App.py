@@ -1,6 +1,6 @@
+import sys
 import requests
-import folium
-import sys 
+import folium 
 import tempfile
 import os
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -225,10 +225,16 @@ def limpaCampos():
 #Criando aplicação
 app = QApplication(sys.argv) 
 
+
+
 #Janela
 telaUpgradeLogin = QWidget()
 telaUpgradeLogin.setWindowTitle("Login")
 telaUpgradeLogin.setGeometry(800, 800, 800, 800)
+
+with open("estilo.qss", "r") as arquivo_qss:
+    estilo = arquivo_qss.read()
+    telaUpgradeLogin.setStyleSheet(estilo)
 
 mapa_view = QWebEngineView(telaUpgradeLogin)
 mapa_view.setGeometry(400, 30, 380, 550)
