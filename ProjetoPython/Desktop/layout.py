@@ -1,7 +1,6 @@
 import sys
 import requests
 import folium
-import sys 
 import tempfile
 import time
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -68,7 +67,7 @@ def mostrar_mapa(cep, rua, bairro, cidade, uf):
             'limit': 1
         }
         headers = {
-            'User-Agent': 'SistemaCadastroEndereco/1.0 (mouranicole09@gmail.com)'
+            'User-Agent': 'SistemaCadastroEndereco/1.0 (moura2007nick@gmail.com)'
         }
         
         response = requests.get(url_geo, params=params, headers=headers, timeout=10)
