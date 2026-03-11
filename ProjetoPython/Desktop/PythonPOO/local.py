@@ -1,8 +1,7 @@
 def acesso (nome):
-    print(f'Olá')
+    print(f'Olá {nome}')
 
 def chamada(nome):
-    acesso(nome)
-    print(nome)
+    print(acesso(nome))
 
-chamada(acesso('Nicole'))
+chamada('Nicole')
