@@ -72,7 +72,7 @@ def mostrar_mapa(cep, rua, bairro, cidade, uf):
         
         response = requests.get(url_geo, params=params, headers=headers, timeout=10)
         dados = response.json()
-        
+        print(dados)
         if dados:
             lat = float(dados[0]['lat'])
             lon = float(dados[0]['lon'])
