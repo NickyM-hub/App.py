@@ -119,7 +119,6 @@ def conferirDataAtual():
 
             # converte para objeto datetime
             dataAtual = datetime.strptime(date_str, "%Y-%m-%d")            
-
             return dataAtual
         else:
             QMessageBox.critical(telaLogin, "Erro", "Falha na consulta da data atual.\nVerifique sua conexão com a internet.")
@@ -127,6 +126,7 @@ def conferirDataAtual():
     except Exception as e:
         QMessageBox.critical(telaLogin, "Erro", f"Ocorreu um erro: {str(e)}")
         return None
+
 
 def mensagensZueira(idade):
     if idade >= 100:
@@ -169,6 +169,9 @@ def calcIdade(dataNascimento):
     hoje = QDate.currentDate()    
     
     idade = hoje.year() - data_nascimento.year  
+    
+    if (hoje.month(), hoje.day()) < (dataNascimento.month(), dataNascimento.day()):
+        idade -= 1
     
     return idade
 
