@@ -152,7 +152,7 @@ def mensagensZueira(idade):
     elif idade >= 18:
         print("Maior de idade")
     elif idade >= 13:
-        print("Aborrecente")
+        print("Aborrecente detectado: Saia da tela e volte a estudar!")
     elif idade >= 10:
         print("Merenda escolar virou o único motivo pra ir à aula")
     elif idade >= 5:
