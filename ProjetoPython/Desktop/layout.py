@@ -72,10 +72,13 @@ def mostrar_mapa(cep, rua, bairro, cidade, uf):
         
         response = requests.get(url_geo, params=params, headers=headers, timeout=10)
         dados = response.json()
+
         print(dados)
+
         if dados:
             lat = float(dados[0]['lat'])
             lon = float(dados[0]['lon'])
+            print(dados)
             
             #mapa
             mapa = folium.Map(location=[lat, lon], zoom_start=16)
@@ -113,7 +116,6 @@ def conferirDataAtual():
         response = requests.get(url)
         if response.status_code == 200:
             data = response.json()
-
             # pega só a parte da data
             date_str = data["date"].split("T")[0]
 
@@ -159,7 +161,6 @@ def mensagensZueira(idade):
         print("Pedido negado")
 
 def calcIdade(dataNascimento):
-
     data_nascimento = date(
         dataNascimento.year(),
         dataNascimento.month(),
@@ -219,8 +220,6 @@ def validaCampos():
     if len(senha) < 8:
         QMessageBox.critical(telaLogin, "Atenção", "A senha deve conter no mínimo 8 caracteres")
         return
-
-    #Verificação de datas
 
     #data futura
     if QDate(dataNascimento) > dataAtual: 
