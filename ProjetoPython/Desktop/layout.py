@@ -72,8 +72,7 @@ def mostrar_mapa(cep, rua, bairro, cidade, uf):
         
         response = requests.get(url_geo, params=params, headers=headers, timeout=10)
         dados = response.json()
-        
-        
+
         if dados:
             lat = float(dados[0]['lat'])
             lon = float(dados[0]['lon'])
@@ -151,7 +150,7 @@ def mensagensZueira(idade):
     elif idade >= 18:
         print("Maior de idade")
     elif idade >= 13:
-        print("Aborrecente")
+        print("Aborrecente detectado: Saia da tela e volte a estudar!")
     elif idade >= 10:
         print("Merenda escolar virou o único motivo pra ir à aula")
     elif idade >= 5:
@@ -169,6 +168,9 @@ def calcIdade(dataNascimento):
     hoje = QDate.currentDate()    
     
     idade = hoje.year() - data_nascimento.year  
+    
+    if (hoje.month(), hoje.day()) < (dataNascimento.month(), dataNascimento.day()):
+        idade -= 1
     
     return idade
 
