@@ -1,9 +1,9 @@
 def ler_arquivo(caminho_arquivo):
     arquivo = None
     try:
-        arquivo = open(caminho_arquivo, 'r')
+        arquivo = open('/home/nicole/Área de trabalho/HelloWorld.txt', 'r')
     except FileNotFoundError:
-        print(f"Erro: O arquivo '{caminho_arquivo}' não foi encontrado.")
+        print(f"Erro: O arquivo '{'/home/nicole/Área de trabalho/HelloWorld.txt'}' não foi encontrado.")
     else:
         conteudo = arquivo.read()
         print("Conteúdo do arquivo:")
