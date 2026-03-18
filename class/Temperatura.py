@@ -19,9 +19,12 @@ class ControleTemperatura:
         return self.__temperatura * 1.8 + 32
 
 # teste
-temp = ControleTemperatura(25)
-print("Temperatura atual:", temp.atualizarTemperatura)
+entrada = float(input("Digite uma temperatura (°C): "))
+temp = ControleTemperatura(entrada)
+print("Temperatura atual:", temp.temperatura)
+print("Em Fahrenheit:", temp.converter_para_fahrenheit())
+
 temp.atualizarTemperatura = 30
 print("Nova temperatura:", temp.atualizarTemperatura)
-temp.atualizarTemperatura = 150  # deve mostrar erro
 print("Em Fahrenheit:", temp.converter_para_fahrenheit())
+temp.atualizarTemperatura = 150
