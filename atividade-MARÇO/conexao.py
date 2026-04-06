@@ -6,7 +6,7 @@ database = 'nova_conexao'
 username = 'conection_nicky'
 password = 'NickyM469'
 
-time.sleep(1)
+time.sleep(1) 
 
 connection_string = f"""
 DRIVER={{ODBC Driver 18 for SQL Server}};
@@ -16,6 +16,7 @@ UID={username};
 PWD={password};
 TrustServerCertificate=yes;
 """
+
 
 try:
     conn = pyodbc.connect(connection_string)
