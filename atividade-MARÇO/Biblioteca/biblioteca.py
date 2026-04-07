@@ -1,4 +1,36 @@
+import pyodbc
+import time
 from abc import ABC, abstractmethod
+
+server = 'TBS0676757W11-1\\SQLEXPRESS'
+database = 'biblioteca_python'
+username = 'conection_nicky'
+password = 'NickyM469'
+
+time.sleep(1) 
+
+connection_string = f"""
+DRIVER={{ODBC Driver 18 for SQL Server}};
+SERVER={server};
+DATABASE={database};
+UID={username};
+PWD={password};
+TrustServerCertificate=yes;
+"""
+
+
+try:
+    conn = pyodbc.connect(connection_string)
+    print("Conexão bem-sucedida!")
+except pyodbc.Error as e:
+    print("Erro na conexão:")
+    for err in e.args:
+        print(err)
+finally:
+    try:
+        conn.close()
+    except:
+        pass
 
 #--------------------------------------------------------------------
 # CLASSE BIBLIOTECA
@@ -43,13 +75,26 @@ class Usuario:
         self.livros_emprestados = 0
         pass
 
-    def emprestar_livro(self, livro):
+    def get_nome(self):
+        return self.__nome
+
+    def get_idade(self):
+        return self.__idade
+
+    def emprestar(self, livro):
         if self.livros_emprestados < Biblioteca.MAX_LIVROS_POR_USUARIO:
             if livro.disponivel:
                 livro.emprestar()
                 self.livros_emprestados += 1
             else:
                 print("Livro indisponível")
+
+    def devolver(self, livro):
+        if self.livros_emprestados > 0:
+            livro.devolver()
+            self.livros_emprestados -= 1
+        else:
+            print("Nenhum livro para devolver.")
 
     def apresentar(self):
         print(f"Nome: {self.__nome} e possui {self.__idade} anos.")
@@ -70,11 +115,17 @@ class Funcionario(Pagamento, ABC):
         self.__nome = __nome
         self.__salario = __salario
 
+    def get_nome(self):
+        return self.__nome
+
+    def get_salario(self):
+        return self.__salario
+    
     @abstractmethod
-    def calcularBonus(self):
+    def calcular_bonus(self):
         pass
 
-    def mostrarDados(self):
+    def mostrar_dados(self):
         print(f'Nome: {self.__nome}')
         print(f'Salário: {self.__salario}')
 
@@ -88,13 +139,12 @@ class Bibliotecario(Funcionario):
     def __init__(self, __nome, __salario):
         super().__init__(__nome, __salario)
 
-    def calcularBonus(self):
-        
-        return self._Funcionario__salario * 0.10
+    def calcular_bonus(self):   
+        return self.get_salario() * 0.10
     
-    def mostrarDados(self):
-        print(f'Nome: {self.__nome}')
-        print(f'Salário: {self.__salario}')
+    def mostrar_dados(self):
+        print(f'Nome: {self.get_nome()}')
+        print(f'Salário: {self.get_salario()}')
 
     def processar_pagamento(self, valor):
         print(f"Bibliotecário recebeu pagamento de R$ {valor:.2f}")
@@ -106,51 +156,13 @@ class Gerente(Funcionario):
     def __init__(self, __nome, __salario):
         super().__init__(__nome, __salario)
 
-    def calcularBonus(self):
-        self.__salario * 0.20
-        return self.__salario
+    def calcular_bonus(self):
+        return self.get_salario() * 0.20
     
-    def mostrarDados(self):
-        print(f'Nome: {self.__nome}')
-        print(f'Salário: {self.__salario}')
+    def mostrar_dados(self):
+        print(f'Nome: {self.get_nome()}')
+        print(f'Salário: {self.get_salario()}')
 
     def processar_pagamento(self, valor):
         print(f"Gerente recebeu pagamento de R$ {valor:.2f}")
 #-----------------------------------------------------------------
-
-# =========================
-# TESTE DO SISTEMA
-# =========================
-if __name__ == "__main__":
-    # Livros
-    livro1 = Livro("Dom Casmurro", "Machado de Assis")
-    livro2 = Livro("1984", "George Orwell")
-
-    # Usuário
-    user = Usuario("João", 20)
-    user.apresentar()
-
-    # Empréstimos
-    user.emprestar_livro(livro1)
-    user.emprestar_livro(livro1)  # erro (já emprestado)
-    user.emprestar_livro(livro2)
-
-    print("Total emprestados:", Livro.total_livros_emprestados)
-
-    # Devolução
-    user.devolver_livro(livro1)
-    print("Total emprestados:", Livro.total_livros_emprestados)
-
-    # Funcionários
-    b = Bibliotecario("Ana", 3000)
-    g = Gerente("Carlos", 5000)
-
-    b.mostrar_dados()
-    print("Bônus:", b.calcular_bonus())
-    b.processar_pagamento(3000)
-
-    print()
-
-    g.mostrar_dados()
-    print("Bônus:", g.calcular_bonus())
-    g.processar_pagamento(5000)
